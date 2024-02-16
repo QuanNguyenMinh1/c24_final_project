@@ -192,216 +192,215 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 
 void btn_adjust_mode(void)
 {
-				if (mode == BINHTHUONG)
-		  		{
-		  			mode = CHINHPHUT;  			/* gán mode = 1 */
-		  			if ((button00_detect == 1) ||(button11_detect == 1) || (button22_detect == 1))
-		  			{
-		  			button00_detect = 0;
-		  			button22_detect = 0;
-		  			button11_detect = 0;
-		  			sprintf(strtempmin1, "%02d", min_temp1);
-		  			draw_string(120, 85, COLOR_GREEN, 1, strtempmin1);
-		  			}
-		  		}
-		  		else if (mode == CHINHPHUT)
-		  		{
-		  			datetime.min = min_temp1;
-		  			RTC_WriteTime(&datetime);
-		  			mode = CHINHGIO;			/* gán mode = 2 */
-		  			fill_rectangle(120, 85, 140, 95, COLOR_WHITE);
-		  			if ((button00_detect == 1) ||(button11_detect == 1) || (button22_detect == 1))
-		  			{
-		  			button00_detect =0;
-		  			button22_detect = 0;
-		  			button11_detect = 0;
-
-		  			sprintf(strtemphour1, "%02d", hour_temp1);
-		  			draw_string(95, 85, COLOR_GREEN, 1, strtemphour1);
-		  			}
-		  		}
-		  		else if (mode == CHINHGIO)		/* mode = 2 */
-		  		{
-		  			datetime.hour = hour_temp1;
-		  			RTC_WriteTime(&datetime);
-		  			mode = CHINHNGAY; 			/* gán mode = 3 */
-		  			fill_rectangle(95, 85, 115, 95, COLOR_WHITE);
-		  			if ((button00_detect == 1) ||(button11_detect == 1) || (button22_detect == 1))
-		  			{
-		  			button00_detect =0;
-		  			button22_detect = 0;
-		  			button11_detect = 0;
-		  			sprintf(strtempdate1, "%02d", date_temp1);
-		  			draw_string(95, 145, COLOR_GREEN, 1, strtempdate1);
-		  			}
-		  		}
-		  		else if (mode == CHINHNGAY)		/* mode = 3 */
-		  		{
-		  			fill_rectangle(95, 145, 115, 155, COLOR_WHITE);
-		  			if (datetime.date != date_temp1)
-		  			{
-						datetime.date = date_temp;
-						RTC_WriteTime(&datetime);
-		  			}
-		  			mode = BINHTHUONG;			/* gán mode = 0 */
-		  		}
+	if (mode == BINHTHUONG)
+	{
+		mode = CHINHPHUT;  			/* gán mode = 1 */
+		if ((button00_detect == 1) || (button11_detect == 1) || (button22_detect == 1))
+		{
+		button00_detect = 0;
+		button22_detect = 0;
+		button11_detect = 0;
+		sprintf(strtempmin1, "%02d", min_temp1);
+		draw_string(120, 85, COLOR_GREEN, 1, strtempmin1);
+		}
+	}
+	else if (mode == CHINHPHUT)
+	{
+		datetime.min = min_temp1;
+		RTC_WriteTime(&datetime);
+		mode = CHINHGIO;			/* gán mode = 2 */
+		fill_rectangle(120, 85, 140, 95, COLOR_WHITE);
+		if ((button00_detect == 1) || (button11_detect == 1) || (button22_detect == 1))
+		{
+		button00_detect = 0;
+		button22_detect = 0;
+		button11_detect = 0;
+		sprintf(strtemphour1, "%02d", hour_temp1);
+		draw_string(95, 85, COLOR_GREEN, 1, strtemphour1);
+		}
+	}
+	else if (mode == CHINHGIO)		/* mode = 2 */
+	{
+		datetime.hour = hour_temp1;
+		RTC_WriteTime(&datetime);
+		mode = CHINHNGAY; 			/* gán mode = 3 */
+		fill_rectangle(95, 85, 115, 95, COLOR_WHITE);
+		if ((button00_detect == 1) || (button11_detect == 1) || (button22_detect == 1))
+		{
+		button00_detect = 0;
+		button22_detect = 0;
+		button11_detect = 0;
+		sprintf(strtempdate1, "%02d", date_temp1);
+		draw_string(95, 145, COLOR_GREEN, 1, strtempdate1);
+		}
+	}
+	else if (mode == CHINHNGAY)		/* mode = 3 */
+	{
+		fill_rectangle(95, 145, 115, 155, COLOR_WHITE);
+		if (datetime.date != date_temp1)
+		{
+			datetime.date = date_temp;
+			RTC_WriteTime(&datetime);
+		}
+		mode = BINHTHUONG;			/* gán mode = 0 */
+	}
 }
 	/* Tạo hàm sẽ chạy khi nhấn button_up */
 void btn_adjust_up (void)
 {
-     	if (mode == CHINHPHUT)
-     	{	
-			++min_temp;
-			if (min_temp == 60)
-			{
-				min_temp = 0;
-			}
-		  	if (min_temp1 != min_temp)
-			{
-				min_temp1 = min_temp;
-				fill_rectangle(120, 85, 140, 95, COLOR_WHITE);
-			}
-			sprintf(strtempmin1, "%02d", min_temp1);
-			draw_string(120, 85, COLOR_GREEN, 1, strtempmin1);
-     	}
-     	else if (mode == CHINHGIO)
-		{	
-			++hour_temp;
-			if (hour_temp >= 24)
-			{
-				hour_temp = 0;
-			}
-		  	if (hour_temp1 != hour_temp)
-			{
-				hour_temp1 = hour_temp;
-				fill_rectangle(95, 85, 115, 95, COLOR_WHITE);
-			}
-		  	sprintf(strtemphour1, "%02d", hour_temp1);
-			draw_string(95, 85, COLOR_GREEN, 1, strtemphour1);
+	if (mode == CHINHPHUT)
+	{	
+		++min_temp;
+		if (min_temp == 60)
+		{
+			min_temp = 0;
 		}
-     	else if (mode == CHINHNGAY)
-		{		
-			++date_temp;
-			switch (datetime.month)   			/* xét xem tháng hiện tại có tổng bao nhiêu ngày */
-			{
-				case 1:
-				case 3:
-				case 5:
-				case 7:
-				case 8:
-				case 10:
-				case 12:
-					date_max = 31 + 1;
-					break;
-				case 4:
-				case 6:
-				case 9:
-				case 11:
-					date_max = 30 + 1;
-				case 2:
-					if ((datetime.year - 2014) % 4 == 0)
-					{
-						date_max = 29 + 1;
-					}
-					else
-					{
-						date_max = 28 + 1;
-					}
-					break;
-				default:
-					break;
-			}
-			if (date_temp >= date_max)
-			{
-				date_temp = 1;
-			}
-			if (date_temp1 != date_temp)
-			{
-				date_temp1 = date_temp;
-				fill_rectangle(95, 145, 115, 155, COLOR_WHITE);
-			}
-			sprintf(strtempdate1, "%02d", date_temp1);
-			draw_string(95, 145, COLOR_GREEN, 1, strtempdate1);
+		if (min_temp1 != min_temp)
+		{
+			min_temp1 = min_temp;
+			fill_rectangle(120, 85, 140, 95, COLOR_WHITE);
 		}
+		sprintf(strtempmin1, "%02d", min_temp1);
+		draw_string(120, 85, COLOR_GREEN, 1, strtempmin1);
+	}
+	else if (mode == CHINHGIO)
+	{	
+		++hour_temp;
+		if (hour_temp >= 24)
+		{
+			hour_temp = 0;
+		}
+		if (hour_temp1 != hour_temp)
+		{
+			hour_temp1 = hour_temp;
+			fill_rectangle(95, 85, 115, 95, COLOR_WHITE);
+		}
+		sprintf(strtemphour1, "%02d", hour_temp1);
+		draw_string(95, 85, COLOR_GREEN, 1, strtemphour1);
+	}
+	else if (mode == CHINHNGAY)
+	{		
+		++date_temp;
+		switch (datetime.month)   			/* xét xem tháng hiện tại có tổng bao nhiêu ngày */
+		{
+			case 1:
+			case 3:
+			case 5:
+			case 7:
+			case 8:
+			case 10:
+			case 12:
+				date_max = 31 + 1;
+				break;
+			case 4:
+			case 6:
+			case 9:
+			case 11:
+				date_max = 30 + 1;
+			case 2:
+				if ((datetime.year - 2014) % 4 == 0)
+				{
+					date_max = 29 + 1;
+				}
+				else
+				{
+					date_max = 28 + 1;
+				}
+				break;
+			default:
+				break;
+		}
+		if (date_temp >= date_max)
+		{
+			date_temp = 1;
+		}
+		if (date_temp1 != date_temp)
+		{
+			date_temp1 = date_temp;
+			fill_rectangle(95, 145, 115, 155, COLOR_WHITE);
+		}
+		sprintf(strtempdate1, "%02d", date_temp1);
+		draw_string(95, 145, COLOR_GREEN, 1, strtempdate1);
+	}
 }
 	/* Tạo hàm sẽ chạy khi nhấn button_down */
 void btn_adjust_down(void)
 {
-		if (mode == CHINHPHUT)
-		{	
-			--min_temp;
-			if (min_temp <= -1)
-			{
-				min_temp = 59;
-			}
-		  	if (min_temp1 != min_temp)
-			{
-				min_temp1 = min_temp;
-				fill_rectangle(120, 85, 140, 95, COLOR_WHITE);
-			}
-		  	sprintf(strtempmin1, "%02d", min_temp1);
-		  	draw_string(120, 85, COLOR_GREEN, 1, strtempmin1);
-		}
-		else if (mode == CHINHGIO)
-		{	
-			--hour_temp;
-			if (hour_temp <= -1)
-			{
-				hour_temp = 23;
-			}
-		  	if (hour_temp1 != hour_temp)
-			{
-			  	hour_temp1 = hour_temp;
-				fill_rectangle(95, 85, 115, 95, COLOR_WHITE);
-			}
-		  	sprintf(strtemphour1, "%02d", hour_temp1);
-			draw_string(95, 85, COLOR_GREEN, 1, strtemphour1);
-
-		}
-		else if (mode == CHINHNGAY)
+	if (mode == CHINHPHUT)
+	{	
+		--min_temp;
+		if (min_temp <= -1)
 		{
-			--date_temp;
-			switch (datetime.month)						/* xét xem tháng hiện tại có tổng bao nhiêu ngày */
-			{
-				case 1:
-				case 3:
-				case 5:
-				case 7:
-				case 8:
-				case 10:
-				case 12:
-					date_max = 31 + 1;
-					break;
-				case 4:
-				case 6:
-				case 9:
-				case 11:
-					date_max = 30 + 1;
-				case 2:
-					if ((datetime.year - 2014) % 4 == 0)	/* Nếu năm hiện tại là năm nhuận thì số tổng số ngày của tháng 2 ở năm hiện tại là 29, còn không thì là 28*/
-					{
-						date_max = 29 + 1;
-					}
-					else
-					{
-						date_max = 28 + 1;
-					}
-					break;
-				default:
-					break;
-			}
-			if (date_temp == 0)
-			{
-				date_temp = date_max - 1;
-			}
-		  	if (date_temp1 != date_temp)
-			{
-				date_temp1 = date_temp;
-				fill_rectangle(95, 145, 115, 155, COLOR_WHITE);
-			}
-		  	sprintf(strtempdate1, "%02d", date_temp1);
-			draw_string(95, 145, COLOR_GREEN, 1, strtempdate1);
+			min_temp = 59;
 		}
+		if (min_temp1 != min_temp)
+		{
+			min_temp1 = min_temp;
+			fill_rectangle(120, 85, 140, 95, COLOR_WHITE);
+		}
+		sprintf(strtempmin1, "%02d", min_temp1);
+		draw_string(120, 85, COLOR_GREEN, 1, strtempmin1);
+	}
+	else if (mode == CHINHGIO)
+	{	
+		--hour_temp;
+		if (hour_temp <= -1)
+		{
+			hour_temp = 23;
+		}
+		if (hour_temp1 != hour_temp)
+		{
+			hour_temp1 = hour_temp;
+			fill_rectangle(95, 85, 115, 95, COLOR_WHITE);
+		}
+		sprintf(strtemphour1, "%02d", hour_temp1);
+		draw_string(95, 85, COLOR_GREEN, 1, strtemphour1);
+
+	}
+	else if (mode == CHINHNGAY)
+	{
+		--date_temp;
+		switch (datetime.month)						/* xét xem tháng hiện tại có tổng bao nhiêu ngày */
+		{
+			case 1:
+			case 3:
+			case 5:
+			case 7:
+			case 8:
+			case 10:
+			case 12:
+				date_max = 31 + 1;
+				break;
+			case 4:
+			case 6:
+			case 9:
+			case 11:
+				date_max = 30 + 1;
+			case 2:
+				if ((datetime.year - 2014) % 4 == 0)	/* Nếu năm hiện tại là năm nhuận thì số tổng số ngày của tháng 2 ở năm hiện tại là 29, còn không thì là 28*/
+				{
+					date_max = 29 + 1;
+				}
+				else
+				{
+					date_max = 28 + 1;
+				}
+				break;
+			default:
+				break;
+		}
+		if (date_temp == 0)
+		{
+			date_temp = date_max - 1;
+		}
+		if (date_temp1 != date_temp)
+		{
+			date_temp1 = date_temp;
+			fill_rectangle(95, 145, 115, 155, COLOR_WHITE);
+		}
+		sprintf(strtempdate1, "%02d", date_temp1);
+		draw_string(95, 145, COLOR_GREEN, 1, strtempdate1);
+	}
 }
 	/* Xu li nhan data qua UART */
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
@@ -524,7 +523,7 @@ int main(void)
   draw_string(10, 10, COLOR_BLUEVIOLET, 2, "HELLO");
   fill_rectangle(0, 0, WIDTH, HEIGHT, COLOR_WHITE);
 
-  /*setting time*/
+  /* setting time */
   datetime.second = 50;
   datetime.min = 58;
   datetime.hour = 17;
@@ -592,21 +591,21 @@ int main(void)
 	 sprintf(strhour, "%02d", datetime.hour);
 	 sprintf(strdate, "%02d", datetime.date);
 
-	 if(secondtemp != second_present)
+	 if (secondtemp != second_present)
 	 {
 		 fill_rectangle(145, 100, 170, 110, COLOR_WHITE);
 		 second_present = secondtemp;
 	 }
 	 draw_string(40, 100, COLOR_BLACK, 1, str1);
 
-	 if(mintemp != min_present)
+	 if (mintemp != min_present)
 	 {
 		 fill_rectangle(120, 100, 140, 110, COLOR_WHITE);
 		 min_present = mintemp;
 	 }
 	 draw_string(40, 100, COLOR_BLACK, 1, str1);
 
-	 if(hourtemp != hour_present)
+	 if (hourtemp != hour_present)
 	 {
 		 fill_rectangle(95, 100, 115, 110, COLOR_WHITE);
 		 hour_present = hourtemp;
@@ -614,7 +613,7 @@ int main(void)
 	 draw_string(40, 100, COLOR_BLACK, 1, str1);
 
 	 sprintf(str2,"Date: %02d/%02d/20%02d",datetime.date,datetime.month,datetime.year );
-	 if(datetemp != date_present)
+	 if (datetemp != date_present)
 	 {
 		  fill_rectangle(95, 115, 115, 135, COLOR_WHITE);
 		  date_present = datetemp;
@@ -642,18 +641,18 @@ int main(void)
 		 session_flag = 0;
 	 }
 
-	 if((datetime.hour <= 6 || datetime.hour >= 18) && session_flag == 0)
+	 if ((datetime.hour <= 6 || datetime.hour >= 18) && session_flag == 0)
 	 {
 		 present_session = 2;
 		 session_flag = 1;
 	 }
-	 if(present_session != previous_session && session_flag == 1)
+	 if (present_session != previous_session && session_flag == 1)
 	 {
 		 fill_rectangle(182, 5, 220, 45, COLOR_WHITE);
 		 draw_pic_16bit(182, 5, MOON, COLOR_GRAY, 2); /* display moon */
 		 previous_session = present_session;
 	 }
-	 else if(present_session != previous_session && session_flag == 0)
+	 else if (present_session != previous_session && session_flag == 0)
 	 {
 		 fill_rectangle(182, 5, 220, 45, COLOR_WHITE);
 		 draw_pic_16bit(182, 5, SUN, COLOR_SUN, 2); /* display sun */
