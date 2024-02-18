@@ -67,7 +67,7 @@ static void MX_USART1_UART_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-/* variable of temp and hum */
+/* Variable of temp and hum */
 DHT_DataTypedef DHT11_Data;
 extern uint8_t Temp_byte1;
 extern uint8_t Temp_byte2;
@@ -79,21 +79,19 @@ float Temp1;
 float Temp2;
 float Hum1;
 float Hum2;
-
 float previous_temp1;
 float previous_temp2;
 float previous_hum1;
 float previous_hum2;
-
 uint8_t temperature_string[28];
 uint8_t humidity_string[28];
 uint8_t is_show_frame = 0;
 uint8_t temp_nguyen_str[4];
 uint8_t temp_thap_phan_str[4];
-uint8_t  hum_phan_nguyen_str[4];
-uint8_t	 hum_phan_thap_phan_str[8];
+uint8_t hum_phan_nguyen_str[4];
+uint8_t	hum_phan_thap_phan_str[8];
 int flag;
-/* variable of date and time */
+/* Variable of date and time */
 DateTime_t datetime;
 uint8_t second_present, min_present, hour_present, date_present, month_present, year_present;
 int8_t second_temp, min_temp, hour_temp, date_temp, month_temp, year_temp;
@@ -106,25 +104,20 @@ char strdate[20];
 char strtempmin1[20];
 char strtemphour1[20];
 char strtempdate1[20];
-char str1[20]; /* to store string of time */
-char str2[20]; /*to store string of date */
+char str1[20]; 									/* to store string of time */
+char str2[20]; 									/* to store string of date */
 uint8_t is_morning = 0;
 uint8_t is_evening = 0;
 uint8_t is_session_change = 0;
-uint8_t present = 1;
-uint8_t is_done_test_1 = 0;
-
 uint8_t present_session = 0;
 uint8_t previous_session = 0;
 uint8_t session_flag = 0;
-
-/* variable for uart */
+/* Variable for uart */
 uint8_t Rx_Buf = 0;
 uint8_t uart_buffer[7];
 uint8_t uart_pointer = 0;
 uint8_t uart_flag = 0;
 uint32_t u32_timer = 0;
-int isOK;
 uint8_t data_string[19];
 uint8_t data_string2[7];
 uint8_t data_string3[12];
@@ -139,9 +132,9 @@ typedef enum
 	CHINHNGAY = 3,
 }Mode;
 
-Mode mode; /* khai báo biến "mode" có kiểu dữ liệu "Mode" */
+Mode mode; 											/* khai báo biến "mode" có kiểu dữ liệu "Mode" */
 
-/* 0: not detected, 1: detected */
+/* 0: not detected; 1: detected */
 volatile uint8_t button0_detect = 0;
 volatile uint8_t button00_detect = 0;
 volatile uint32_t button0_detect_time = 0;
@@ -152,8 +145,8 @@ volatile uint8_t button22_detect = 0;
 volatile uint8_t button2_detect = 0;
 volatile uint32_t button2_detect_time = 0;
 
-/* function */
-/* Hàm đọc data từ DHT */
+/* FUNCTIONS */
+/* Read data from DHT sensor */
 void Read_DataDHT(void)
 {
 	DHT_GetData(&DHT11_Data);
@@ -164,7 +157,7 @@ void Read_DataDHT(void)
 	Hum1 = DHT11_Data.Hum1;
 	Hum2 = DHT11_Data.Hum2;
 }
-/* Hàm callback ngắt ngoài */
+/* External interupt callback */
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
 	if (GPIO_Pin == GPIO_PIN_4)
@@ -189,7 +182,7 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 		button2_detect_time = HAL_GetTick();
 	}
 }
-
+/* Handle modes */
 void btn_adjust_mode(void)
 {
 	if (mode == BINHTHUONG)
@@ -197,11 +190,11 @@ void btn_adjust_mode(void)
 		mode = CHINHPHUT;  			/* gán mode = 1 */
 		if ((button00_detect == 1) || (button11_detect == 1) || (button22_detect == 1))
 		{
-		button00_detect = 0;
-		button22_detect = 0;
-		button11_detect = 0;
-		sprintf(strtempmin1, "%02d", min_temp1);
-		draw_string(120, 85, COLOR_GREEN, 1, strtempmin1);
+			button00_detect = 0;
+			button22_detect = 0;
+			button11_detect = 0;
+			sprintf(strtempmin1, "%02d", min_temp1);
+			draw_string(120, 85, COLOR_GREEN, 1, strtempmin1);
 		}
 	}
 	else if (mode == CHINHPHUT)
@@ -212,11 +205,11 @@ void btn_adjust_mode(void)
 		fill_rectangle(120, 85, 140, 95, COLOR_WHITE);
 		if ((button00_detect == 1) || (button11_detect == 1) || (button22_detect == 1))
 		{
-		button00_detect = 0;
-		button22_detect = 0;
-		button11_detect = 0;
-		sprintf(strtemphour1, "%02d", hour_temp1);
-		draw_string(95, 85, COLOR_GREEN, 1, strtemphour1);
+			button00_detect = 0;
+			button22_detect = 0;
+			button11_detect = 0;
+			sprintf(strtemphour1, "%02d", hour_temp1);
+			draw_string(95, 85, COLOR_GREEN, 1, strtemphour1);
 		}
 	}
 	else if (mode == CHINHGIO)		/* mode = 2 */
@@ -227,11 +220,11 @@ void btn_adjust_mode(void)
 		fill_rectangle(95, 85, 115, 95, COLOR_WHITE);
 		if ((button00_detect == 1) || (button11_detect == 1) || (button22_detect == 1))
 		{
-		button00_detect = 0;
-		button22_detect = 0;
-		button11_detect = 0;
-		sprintf(strtempdate1, "%02d", date_temp1);
-		draw_string(95, 145, COLOR_GREEN, 1, strtempdate1);
+			button00_detect = 0;
+			button22_detect = 0;
+			button11_detect = 0;
+			sprintf(strtempdate1, "%02d", date_temp1);
+			draw_string(95, 145, COLOR_GREEN, 1, strtempdate1);
 		}
 	}
 	else if (mode == CHINHNGAY)		/* mode = 3 */
@@ -245,11 +238,11 @@ void btn_adjust_mode(void)
 		mode = BINHTHUONG;			/* gán mode = 0 */
 	}
 }
-	/* Tạo hàm sẽ chạy khi nhấn button_up */
+/* Handle Button-up event */
 void btn_adjust_up (void)
 {
 	if (mode == CHINHPHUT)
-	{	
+	{
 		++min_temp;
 		if (min_temp == 60)
 		{
@@ -264,7 +257,7 @@ void btn_adjust_up (void)
 		draw_string(120, 85, COLOR_GREEN, 1, strtempmin1);
 	}
 	else if (mode == CHINHGIO)
-	{	
+	{
 		++hour_temp;
 		if (hour_temp >= 24)
 		{
@@ -279,7 +272,7 @@ void btn_adjust_up (void)
 		draw_string(95, 85, COLOR_GREEN, 1, strtemphour1);
 	}
 	else if (mode == CHINHNGAY)
-	{		
+	{
 		++date_temp;
 		switch (datetime.month)   			/* xét xem tháng hiện tại có tổng bao nhiêu ngày */
 		{
@@ -323,11 +316,11 @@ void btn_adjust_up (void)
 		draw_string(95, 145, COLOR_GREEN, 1, strtempdate1);
 	}
 }
-	/* Tạo hàm sẽ chạy khi nhấn button_down */
+/* Handle Button-down event */
 void btn_adjust_down(void)
 {
 	if (mode == CHINHPHUT)
-	{	
+	{
 		--min_temp;
 		if (min_temp <= -1)
 		{
@@ -342,7 +335,7 @@ void btn_adjust_down(void)
 		draw_string(120, 85, COLOR_GREEN, 1, strtempmin1);
 	}
 	else if (mode == CHINHGIO)
-	{	
+	{
 		--hour_temp;
 		if (hour_temp <= -1)
 		{
@@ -402,7 +395,7 @@ void btn_adjust_down(void)
 		draw_string(95, 145, COLOR_GREEN, 1, strtempdate1);
 	}
 }
-	/* Xu li nhan data qua UART */
+/* Handle received data via UART protocol */
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
 	if (huart->Instance == huart1.Instance)
@@ -423,17 +416,17 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 
 void UART_Handle()
 {
-	/* send temperature and humidity to another bluetooth device */
+/* Send temperature and humidity to another bluetooth-connected device */
 	if (live_flag == 1 && living == 1)
 	{
 		snprintf(data_string3, 11, "*%02g%02g%02g%02g#", Temp1, Temp2, Hum1, Hum2);
 		HAL_UART_Transmit(&huart1, (uint8_t*)data_string3, 11, 200);
 	}
-	/* cut string */
+/* Cut string */
 	if (uart_flag == 1)
 	{
-		char *arg_list[10];//mảng có 10 ô, mỗi ô chứa tối đa 8 bits
-		uint8_t arg_num = 0; // số thứ n trong mảng
+		char *arg_list[10];
+		uint8_t arg_num = 0;
 		char *temp_token = strtok((char *)uart_buffer, " ");	/* Chỉ gán char trừ khoảng trắng cho con tro temp_token */
 		while (temp_token != NULL) 				/* vòng lặp chạy mãi cho tới khi temp_token = null */
 		{
@@ -441,7 +434,7 @@ void UART_Handle()
 			arg_num++; 							/* để bảo đảm là mỗi token đã được qua thực thi rồi */
 			temp_token = strtok(NULL, " ");
 		}
-	/* handle */
+/* Handle */
 		if (strstr(arg_list[0], "*") != NULL)
 		{
 			for (int j = 1; j <=6; j++){
@@ -457,9 +450,8 @@ void UART_Handle()
 			if (strstr(arg_list[1], "live") != NULL)
 			{
 				live_flag = 1;
-				isOK = 1;
 				living++;
-				if (living == 2) 
+				if (living == 2)
 					living = 0;
 				for (int i = 0; i<=6; i++)
 				{
@@ -477,7 +469,6 @@ void UART_Handle()
 		    }
 	    	uart_pointer = 0;
 			uart_flag = 0;
-			isOK = 3;
 	    }
 	}
 }
@@ -523,7 +514,7 @@ int main(void)
   draw_string(10, 10, COLOR_BLUEVIOLET, 2, "HELLO");
   fill_rectangle(0, 0, WIDTH, HEIGHT, COLOR_WHITE);
 
-  /* setting time */
+  /* Setting time */
   datetime.second = 50;
   datetime.min = 58;
   datetime.hour = 17;
@@ -541,44 +532,43 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-	  /* Hàm xử lí UART */
 	  UART_Handle();
-	  /* button detect */
-	  /* button mode */
+	  /* Button detect */
+	  /* Button mode */
 	  if ((button0_detect == 1) && (HAL_GetTick() - button0_detect_time >= 200))
 	  {
 		  button0_detect = 0;
 		  btn_adjust_mode();
 	  }
-	  /* button up */
+	  /* Button up */
 	  if ((button1_detect == 1) && (HAL_GetTick() - button1_detect_time >= 200))
 	  {
 		  button1_detect = 0;
 		  btn_adjust_up();
 	  }
-	  /* button down */
+	  /* Button down */
 	  if ((button2_detect == 1) && (HAL_GetTick() - button2_detect_time >= 200))
 	  {
 		  button2_detect = 0;
 		  btn_adjust_down();
 	  }
-	  /*show frame of screen once*/
+	  /* Show frame of screen once */
 	  if (is_show_frame == 0)
 	  {
-		 	/*draw title*/
+		 	/* draw title */
 		 	draw_string(40, 5, COLOR_DARKGREEN, 2, "QMD C24");
-		 	/*draw for temp and hum*/
+		 	/* draw for temp and hum */
 			draw_string(20, 45, COLOR_GOLD, 1, "TEMP :");
 		    draw_string(20, 65, COLOR_GOLD, 1, "HUM  :");
 		    draw_pic_8bit(170, 39, ICON_TEMP, COLOR_RED, 2);
 			draw_pic_8bit(170, 59, ICON_HUM, COLOR_BLUE, 2);
-			/*draw icon calendar and clock*/
+			/* draw icon calendar and clock */
 		    draw_pic_8bit(15, 115, ICON_CALENDAR, COLOR_ORANGE, 2);
 			draw_pic_8bit(15, 95, ICON_CLOCK, COLOR_BROWN, 2);
 			is_show_frame = 1;
 	  }
 
-	 /*part of show date and time*/
+	 /* Show date and time */
 	 RTC_ReadTime(&datetime);
 	 secondtemp = datetime.second;
 	 mintemp = datetime.min;
@@ -612,7 +602,7 @@ int main(void)
 	 }
 	 draw_string(40, 100, COLOR_BLACK, 1, str1);
 
-	 sprintf(str2,"Date: %02d/%02d/20%02d",datetime.date,datetime.month,datetime.year );
+	 sprintf(str2, "Date: %02d/%02d/20%02d", datetime.date, datetime.month, datetime.year );
 	 if (datetemp != date_present)
 	 {
 		  fill_rectangle(95, 115, 115, 135, COLOR_WHITE);
@@ -634,7 +624,7 @@ int main(void)
 	 }
 	 draw_string(40, 120, COLOR_BLACK, 1, str2);
 
-	 /*part of display moon and sun*/
+	 /* Display moon and sun */
 	 if (datetime.hour > 6 && datetime.hour < 18)
 	 {
 		 present_session = 1;
@@ -659,9 +649,9 @@ int main(void)
 		 previous_session = present_session;
 	 }
 
-	 /* part of show temp and hum */
+	 /* Read data of temp and hum*/
 	 Read_DataDHT();
-	 /* display temp and hum */
+	 /* Display temp and hum */
 	 if (Temp1 != previous_temp1)
 	 {
 		 sprintf((char *)temp_nguyen_str, "%02d",(uint16_t)Temp1);
